@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../includes/bootstrap.php';
 
 $user = require_login();
-$tab = in_array($_GET['tab'] ?? '', ['licencias', 'pedidos', 'cuenta'], true) ? $_GET['tab'] : 'licencias';
+$tab = in_array($_GET['tab'] ?? '', ['licencias', 'pedidos', 'comprar', 'cuenta'], true) ? $_GET['tab'] : 'licencias';
 $errors = [];
 
 // ---- Actualizar datos de la cuenta ----
@@ -72,7 +72,7 @@ include __DIR__ . '/../includes/site_header.php';
         <p><?= e($user['institution'] ?: $user['email']) ?></p>
       </div>
       <div class="toolbar">
-        <a class="btn btn-outline btn-sm" href="<?= url('index.php#precios') ?>">Comprar otra licencia</a>
+        <a class="btn btn-outline btn-sm" href="?tab=comprar">Comprar otra licencia</a>
         <a class="btn btn-ghost btn-sm" href="<?= url('portal/logout.php') ?>">Cerrar sesión</a>
       </div>
     </div>
@@ -89,6 +89,7 @@ include __DIR__ . '/../includes/site_header.php';
     <nav class="portal-tabs">
       <a class="<?= $tab === 'licencias' ? 'on' : '' ?>" href="?tab=licencias">Mis licencias</a>
       <a class="<?= $tab === 'pedidos' ? 'on' : '' ?>" href="?tab=pedidos">Pedidos y pagos</a>
+      <a class="<?= $tab === 'comprar' ? 'on' : '' ?>" href="?tab=comprar">Comprar licencia</a>
       <a class="<?= $tab === 'cuenta' ? 'on' : '' ?>" href="?tab=cuenta">Mi cuenta</a>
     </nav>
 
@@ -101,8 +102,8 @@ include __DIR__ . '/../includes/site_header.php';
         <div class="card empty">
           <div class="big">🔑</div>
           <h2>Aún no tienes licencias activas</h2>
-          <p>Cuando tu pago sea aprobado, tu licencia aparecerá aquí.</p>
-          <a class="btn btn-blue" href="<?= url('index.php#precios') ?>">Ver licencias</a>
+          <p>Compra una licencia para empezar, o espera a que se apruebe un pago en curso.</p>
+          <a class="btn btn-blue" href="?tab=comprar">Comprar una licencia</a>
         </div>
       <?php endif; ?>
 
@@ -155,6 +156,33 @@ include __DIR__ . '/../includes/site_header.php';
           </div>
         <?php endif; ?>
       </div>
+
+    <?php elseif ($tab === 'comprar'): ?>
+      <div class="card" style="margin-bottom:22px">
+        <h2>Compra una licencia</h2>
+        <p class="muted" style="margin:0">Elige el plan que necesitas. Como ya iniciaste sesión, solo confirmarás los datos de tu
+          institución y pasarás a la pantalla de pago (tarjeta, PSE o Efecty). Puedes comprar las licencias que quieras: cada
+          compra suma una licencia independiente a tu cuenta.</p>
+      </div>
+
+      <div class="price-grid" style="margin-top:0">
+        <?php foreach (plans() as $code => $p): $featured = $code === 'volumen'; ?>
+          <div class="price-card<?= $featured ? ' featured' : '' ?>">
+            <?php if ($featured): ?><span class="ribbon">Mejor valor por usuario</span><?php endif; ?>
+            <div class="plan-ico" style="background:<?= $featured ? 'var(--lav)' : 'var(--teal-3)' ?>;font-size:1.5rem"><?= $featured ? '🏛️' : '🏫' ?></div>
+            <h3><?= e($p['name']) ?></h3>
+            <p class="plan-desc"><?= e($p['description']) ?></p>
+            <div class="price"><span class="amount">$<?= number_format($p['price'], 0, ',', '.') ?></span><span class="cur"><?= e(CURRENCY) ?> / año</span></div>
+            <div class="price-note"><?= (int) $p['seats'] ?> usuarios · <?= (int) $p['campuses'] ?> sede(s) · <?= (int) $p['months'] ?> meses</div>
+            <ul class="checks">
+              <?php foreach ($p['features'] as $feat): ?><li><?= e($feat) ?></li><?php endforeach; ?>
+            </ul>
+            <a class="btn <?= $featured ? 'btn-blue' : 'btn-primary' ?> btn-block" href="<?= url('checkout.php?plan=' . $code) ?>">Comprar y pagar</a>
+          </div>
+        <?php endforeach; ?>
+      </div>
+
+      <div style="max-width:940px;margin:26px auto 0"><?php include __DIR__ . '/../includes/intl_notice.php'; ?></div>
 
     <?php else: ?>
       <div class="detail-grid">

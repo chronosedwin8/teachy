@@ -1,0 +1,94 @@
+/* =========================================================
+   Pantalla de pago propia
+   ========================================================= */
+.secure-pill { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: .88rem; color: var(--teal); background: var(--teal-4); border: 1px solid var(--teal-3); padding: 8px 14px; border-radius: 999px; }
+.secure-pill svg { width: 16px; height: 16px; }
+
+.pay-card { padding: 0; overflow: hidden; }
+.method-tabs { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--lav-2); background: var(--bg-soft); }
+.method-tab {
+  display: flex; align-items: center; gap: 12px; padding: 20px 22px; background: none; border: 0; cursor: pointer;
+  text-align: left; font-weight: 700; font-size: 1rem; color: var(--slate); border-bottom: 3px solid transparent; transition: all .2s;
+}
+.method-tab svg { width: 26px; height: 26px; flex: none; }
+.method-tab small { display: block; font-weight: 600; font-size: .78rem; color: var(--slate-2); }
+.method-tab:hover { color: var(--ink); }
+.method-tab.active { color: var(--ink); background: var(--white); border-bottom-color: var(--blue); }
+.method-tab.active svg { color: var(--blue); }
+
+.method-panel { display: none; padding: 30px 32px 10px; }
+.method-panel.active { display: block; animation: fadeUp .35s ease both; }
+.method-note { background: var(--lav-3); border-radius: 14px; padding: 14px 16px; color: var(--ink-2); font-size: .93rem; font-weight: 600; margin-bottom: 22px; }
+.pay-btn { margin-top: 24px; padding: 18px 26px; font-size: 1.05rem; }
+.pay-btn:disabled { opacity: .6; cursor: wait; transform: none; }
+
+.pay-error { margin: 22px 32px 0; padding: 14px 18px; border-radius: 14px; background: #FFF1F1; border: 1px solid var(--rose); color: #9b2c2c; font-weight: 700; font-size: .95rem; }
+.pay-foot { display: flex; gap: 12px; align-items: center; padding: 20px 32px 26px; color: var(--slate); font-size: .86rem; font-weight: 600; }
+.pay-foot svg { width: 22px; height: 22px; flex: none; color: var(--teal); }
+
+/* Campos seguros (iframes de Mercado Pago) con la misma apariencia que .input */
+.secure-field { height: 52px; padding: 0 15px; display: flex; align-items: center; }
+.secure-field iframe { width: 100%; height: 100%; border: 0; }
+.secure-field.focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(88, 128, 241, .15); }
+.secure-field.invalid { border-color: #E57373; }
+.demo-field { color: var(--slate-2); font-weight: 600; background: var(--bg-soft); }
+.demo-field small { margin-left: 8px; }
+
+/* Vista previa de la tarjeta */
+.card-visual {
+  position: relative; max-width: 360px; aspect-ratio: 1.586; margin: 0 auto 28px; border-radius: 20px; padding: 22px 24px;
+  color: #fff; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
+  background: radial-gradient(circle at 85% 15%, rgba(255, 255, 255, .18), transparent 40%), linear-gradient(135deg, #0F151A, #323E47);
+  box-shadow: 0 20px 40px rgba(15, 21, 26, .25); transition: background .4s;
+}
+.card-visual::after { content: ""; position: absolute; width: 240px; height: 240px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .08); right: -80px; bottom: -120px; }
+.card-visual.brand-visa, .card-visual.brand-debvisa { background: linear-gradient(135deg, #1a3a8f, #5880F1); }
+.card-visual.brand-master, .card-visual.brand-debmaster { background: linear-gradient(135deg, #2b2b2b, #b3541e); }
+.card-visual.brand-amex { background: linear-gradient(135deg, #0b6a74, #77C7C1); }
+.card-visual.brand-diners { background: linear-gradient(135deg, #243447, #597080); }
+.card-visual.brand-codensa { background: linear-gradient(135deg, #0a5c36, #3fa36b); }
+.cv-top { display: flex; justify-content: space-between; align-items: center; }
+.cv-chip { width: 44px; height: 32px; border-radius: 7px; background: linear-gradient(135deg, #FFE080, #c99a2e); }
+.cv-top img { height: 30px; background: #fff; border-radius: 6px; padding: 3px 6px; }
+.cv-number { font-family: ui-monospace, Consolas, monospace; font-size: 1.3rem; letter-spacing: .12em; }
+.cv-bottom { display: flex; justify-content: space-between; font-size: .78rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; opacity: .9; gap: 10px; }
+.cv-bottom span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.segmented label { position: relative; }
+.segmented input { position: absolute; opacity: 0; }
+.segmented span { display: block; text-align: center; padding: 12px; border: 1.5px solid var(--line); border-radius: 14px; font-weight: 700; font-size: .92rem; cursor: pointer; color: var(--ink-2); }
+.segmented input:checked + span { border-color: var(--blue); background: var(--lav-3); color: var(--blue-dd); }
+.segmented input:focus-visible + span { box-shadow: 0 0 0 4px rgba(88, 128, 241, .2); }
+
+/* Recibo Efecty */
+.voucher { border: 2px dashed var(--sun); background: linear-gradient(180deg, var(--sun-3), var(--white) 50%); margin-bottom: 24px; }
+.voucher-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.method-logo.efecty { background: #FFD100; color: #111; font-weight: 800; padding: 6px 14px; border-radius: 10px; font-size: 1.05rem; }
+.voucher-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 20px 0 24px; }
+.voucher-grid div { background: var(--white); border: 1px solid var(--lav-2); border-radius: 14px; padding: 14px; }
+.voucher-grid small { display: block; color: var(--slate); font-weight: 600; font-size: .8rem; }
+.voucher-grid b { font-size: 1.1rem; word-break: break-all; }
+
+/* 3D Secure y carga */
+.tds-overlay, .pay-loading { position: fixed; inset: 0; z-index: 100; background: rgba(15, 21, 26, .6); display: grid; place-items: center; padding: 16px; backdrop-filter: blur(4px); }
+.tds-overlay[hidden], .pay-loading[hidden] { display: none; }
+.tds-box { background: var(--white); border-radius: 24px; width: min(520px, 100%); overflow: hidden; box-shadow: var(--shadow-lg); }
+.tds-head { padding: 18px 22px; border-bottom: 1px solid var(--lav-2); }
+.tds-head small { display: block; color: var(--slate); font-weight: 600; }
+.tds-box iframe { width: 100%; height: 520px; border: 0; display: block; }
+.pay-loading { align-content: center; gap: 14px; color: #fff; text-align: center; }
+.pay-loading b { font-size: 1.2rem; }
+.pay-loading small { opacity: .8; font-weight: 600; }
+.spinner { width: 54px; height: 54px; border-radius: 50%; border: 5px solid rgba(255, 255, 255, .25); border-top-color: #fff; animation: spin 1s linear infinite; margin: 0 auto; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 640px) {
+  .method-tab { flex-direction: column; text-align: center; gap: 6px; padding: 16px 8px; font-size: .92rem; }
+  .method-tab small { display: none; }
+  .method-panel { padding: 24px 18px 6px; }
+  .pay-error { margin: 18px 18px 0; }
+  .pay-foot { padding: 18px; }
+  .voucher-grid { grid-template-columns: 1fr; }
+  .tds-box iframe { height: 460px; }
+}

@@ -1,0 +1,9 @@
+# Credenciales: nunca se suben al repositorio
+config.secrets.php
+
+# Archivos del sistema / editores
+Thumbs.db
+.DS_Store
+*.log
+.vscode/
+.idea/

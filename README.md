@@ -57,6 +57,31 @@ contraseña). Permite:
   "Entrar como" un cliente para ver su portal.
 - Registro de pagos: retornos, webhooks y errores de Mercado Pago.
 
+## Despliegue en producción (teachy.es)
+Servidor: EC2 Debian 11 con CloudPanel · nginx + PHP-FPM 8.4 · MySQL.
+El servidor aloja más sitios: trabajar solo dentro de `/home/teachy` y del vhost `www.teachy.es.conf`.
+
+```
+Repositorio:  /home/teachy/repo            (git clone de GitHub)
+Sitio:        /home/teachy/htdocs/www.teachy.es
+Credenciales: <sitio>/config.secrets.php   (600, fuera del repositorio)
+Despliegue:   sudo -u teachy bash /home/teachy/deploy.sh
+Logs:         /home/teachy/logs/{nginx,php}
+Respaldos:    /home/teachy/backups/pre-deploy
+```
+
+Para publicar cambios: `git push` y luego ejecutar `deploy.sh` en el servidor (hace `git reset --hard`
+a origin/main, copia los archivos sin `.git` ni credenciales, ajusta permisos y corre `install.php`).
+
+### Ajustes de nginx aplicados al vhost
+nginx no lee `.htaccess`, por eso el vhost incluye (marcados con `EDUNOVA-`):
+- Bloqueo de `/includes/`, `/sql/`, `config*.php`, `install.php`, `README.md` y extensiones `.sql|.md|.bak|.log|.sh|.ini`.
+- Cabeceras `X-Content-Type-Options`, `X-Frame-Options` y `Referrer-Policy`.
+- `teachy.es` redirige a `www.teachy.es`, salvo `/pago/webhook.php`, que se atiende sin redirección
+  para que las notificaciones de Mercado Pago lleguen por cualquiera de los dos dominios.
+
+Si CloudPanel regenera el vhost, volver a aplicar esos bloques.
+
 ## Estructura
 ```
 config.php              Configuración (marca, BD, MP, planes, roles)

@@ -1,15 +1,14 @@
 # EduNova — landing, venta de licencias y portal de clientes
 
-PHP 8.1+ sin dependencias · MySQL · HTML/CSS/JS · Mercado Pago **Checkout API** (pantalla de cobro propia).
+PHP 8.1+ sin dependencias · MySQL · HTML/CSS/JS · cobros con **enlaces de pago** (uno por plan).
 
 ## Entornos
 `config.php` detecta el entorno por el dominio:
 - **Producción** (`teachy.es` / `www.teachy.es`): `BASE_URL = https://www.teachy.es`, cobros reales.
-- **Local** (`localhost:8080/teachy`): pagos simulados, sin cobros. Para probar cobros reales desde
-  local, definir `MP_LIVE_ON_LOCALHOST = true` (cobra dinero de verdad).
+- **Local** (`localhost:8080/teachy`): mismo comportamiento; los enlaces de pago son los reales.
 
 Las credenciales viven en `config.secrets.php` (fuera del repositorio). Copiar
-`config.secrets.example.php` y completar: base de datos, Mercado Pago y la cuenta de administrador
+`config.secrets.example.php` y completar: base de datos y la cuenta de administrador
 (`ADMIN_EMAIL` + `ADMIN_PASSWORD_HASH`, generado con `password_hash`).
 
 ## Instalación local
@@ -17,32 +16,34 @@ Las credenciales viven en `config.secrets.php` (fuera del repositorio). Copiar
 2. `php install.php` (crea la base y las tablas, aplica migraciones y crea el administrador).
 3. Abrir `http://localhost:8080/teachy/`.
 
-## Mercado Pago
-- Credenciales de producción de una cuenta de Colombia (MCO), moneda COP.
-- Webhook: `https://www.teachy.es/pago/webhook.php`, evento **Pagos**. También funciona en
-  `https://teachy.es/pago/webhook.php`. `MP_WEBHOOK_SECRET` valida la firma `x-signature`.
-- `MP_STATEMENT_DESCRIPTOR`: texto que verá el cliente en el extracto de su tarjeta.
-- Medios: tarjeta (Secure Fields + 3D Secure + cuotas), PSE (47 bancos) y Efecty (recibo a 3 días).
-  El número de la tarjeta nunca llega al servidor: el navegador lo convierte en un token.
+## Cobros con enlaces de pago
+El sitio no se conecta con ninguna API de pagos. Cada plan tiene su propio **enlace de pago** con el
+valor fijo del cobro, definido en `$PLANS[<plan>]['payment_link']` (`config.php`) y editable desde
+**Administración > Precios** sin tocar código.
+
+Importante: el enlace lleva el importe fijo, así que al cambiar el precio de un plan hay que generar
+un enlace nuevo por ese valor y pegarlo en el mismo panel.
 
 ## Flujo de compra
-1. `index.php#precios` → `checkout.php?plan=escuela|volumen` (crea la cuenta y el pedido).
-2. `pago/pagar.php` (pantalla de cobro propia) → `pago/procesar.php` (cobra) y `pago/estado.php` (consulta).
-3. `pago/retorno.php` verifica el pago contra la API (monto y moneda), activa la licencia y lleva al
-   portal. `pago/webhook.php` hace lo mismo de forma asíncrona; procesar dos veces el mismo pago no
-   duplica la licencia.
-4. `portal/` → licencias, código, vigencia y cupos; alta individual o masiva de usuarios, cambio de
-   rol y sede, retiro, exportación CSV, historial de pedidos y reintento de pago.
+1. `index.php#precios` (o el portal) → `checkout.php?plan=escuela|volumen`: crea la cuenta si hace
+   falta, registra el pedido como **pendiente** y ajusta el valor al precio vigente.
+2. `pago/pagar.php?ref=…`: resumen del pedido y botón que abre el enlace de pago del plan.
+3. El cliente paga y pulsa **"Ya realicé el pago"** (`pago/aviso.php`): el pedido pasa a *en proceso*
+   y queda a la vista del administrador.
+4. **Administración > Pedidos**: al confirmar el pago en la cuenta de Mercado Pago, se pulsa
+   **Aprobar**; eso crea la licencia y la activa. "Otorgar licencia" hace lo mismo sin pedido previo.
+5. `portal/` → licencias, código, vigencia y cupos; alta individual o masiva de usuarios, cambio de
+   rol y sede, retiro, exportación CSV e historial de pedidos.
 
 ## Administración (`/admin/`)
 Se entra por `portal/login.php` con una cuenta marcada como administradora.
 - **Resumen**: ventas, pedidos por estado, licencias activas y vencimientos próximos.
-- **Pedidos**: filtrar, sincronizar con Mercado Pago, aprobar manualmente, cancelar, eliminar y
-  otorgar licencias sin pago (transferencias, convenios, cortesías).
+- **Pedidos**: filtrar, aprobar (confirmando el pago), cancelar, eliminar y otorgar licencias sin
+  pedido previo (transferencias, convenios, cortesías).
 - **Licencias**: editar cupos, sedes, estado y vencimiento; renovar 12 meses; gestionar sus usuarios.
-- **Precios**: editar precio, usuarios, sedes, vigencia y características de cada plan.
+- **Precios**: editar precio, **enlace de pago**, usuarios, sedes, vigencia y características.
 - **Usuarios**: crear, dar o quitar permisos, restablecer contraseñas, eliminar y "Entrar como".
-- **Registro de pagos**: retornos, webhooks, cambios de precio y errores.
+- **Registro de pagos**: avisos de pago de los clientes, cambios de precio y errores.
 
 ## Despliegue en producción (teachy.es)
 Servidor: EC2 Debian 11 con CloudPanel · nginx + PHP-FPM 8.4 · MySQL.
@@ -66,8 +67,7 @@ nginx no lee `.htaccess`, por eso el vhost incluye estos bloques (marcados con `
 - Bloqueo de `/includes/`, `/sql/`, `config*.php`, `install.php`, `README.md` y extensiones
   `.sql|.md|.bak|.log|.sh|.ini`.
 - Cabeceras `X-Content-Type-Options`, `X-Frame-Options` y `Referrer-Policy`.
-- `teachy.es` redirige a `www.teachy.es`, salvo `/pago/webhook.php`, que se atiende sin redirección
-  para que las notificaciones lleguen por cualquiera de los dos dominios.
+- `teachy.es` redirige a `www.teachy.es`.
 
 Si CloudPanel regenera el vhost, hay que volver a aplicar esos bloques.
 
@@ -77,10 +77,10 @@ config.php                Configuración (marca, entorno, planes, roles)
 config.secrets.php        Credenciales del servidor (no versionado)
 index.php                 Landing page
 checkout.php              Datos del comprador y creación del pedido
-pago/                     pagar (pantalla de cobro), procesar, estado, retorno, webhook
+pago/                     pagar (enlace de cobro), aviso (el cliente informa su pago)
 portal/                   login, logout, panel del cliente, detalle de licencia
 admin/                    resumen, pedidos, licencias, precios, usuarios, registro
-includes/                 bootstrap, mercadopago, plantillas compartidas
+includes/                 bootstrap, pedidos (licencias), plantillas compartidas
 assets/                   css, js, img
 sql/schema.sql            Esquema de la base de datos
 install.php               Crea tablas, migraciones y cuenta de administrador

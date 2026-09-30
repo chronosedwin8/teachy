@@ -23,8 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $price = (int) preg_replace('/\D/', '', (string) ($_POST['price'] ?? ''));
     $data = [
-        'name'        => trim((string) ($_POST['name'] ?? '')),
-        'price'       => $price,
+        'name'         => trim((string) ($_POST['name'] ?? '')),
+        'price'        => $price,
+        'payment_link' => trim((string) ($_POST['payment_link'] ?? '')),
         'seats'       => (int) ($_POST['seats'] ?? 0),
         'campuses'    => (int) ($_POST['campuses'] ?? 0),
         'months'      => (int) ($_POST['months'] ?? 0),
@@ -33,6 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ];
 
     if (mb_strlen($data['name']) < 3) $errors[] = 'El nombre del plan es demasiado corto.';
+    if (!filter_var($data['payment_link'], FILTER_VALIDATE_URL) || !str_starts_with($data['payment_link'], 'https://')) {
+        $errors[] = 'El enlace de pago debe ser una dirección https válida (por ejemplo https://mpago.li/xxxxxxx).';
+    }
     if ($price < 5000 || $price > 50000000) $errors[] = 'El precio debe estar entre $5.000 y $50.000.000 COP (límites de los medios de pago).';
     if ($data['seats'] < 1 || $data['seats'] > 100000) $errors[] = 'Los usuarios incluidos deben estar entre 1 y 100.000.';
     if ($data['campuses'] < 1 || $data['campuses'] > 1000) $errors[] = 'Las sedes deben estar entre 1 y 1.000.';
@@ -100,6 +104,18 @@ include __DIR__ . '/../includes/site_header.php';
               <input class="input" id="price-<?= e($code) ?>" name="price" inputmode="numeric" data-price data-seats-target="seats-<?= e($code) ?>"
                      value="<?= e(number_format((int) preg_replace('/\D/', '', (string) $v('price', $p['price'])), 0, ',', '.')) ?>" required></div>
             <div class="hint" data-price-hint></div>
+          </div>
+
+          <div class="field" style="margin-top:18px">
+            <label for="link-<?= e($code) ?>">Enlace de pago</label>
+            <input class="input" id="link-<?= e($code) ?>" name="payment_link" type="url" inputmode="url" required
+                   placeholder="https://mpago.li/xxxxxxx" value="<?= e($v('payment_link', $p['payment_link'] ?? '')) ?>">
+            <div class="hint">Es el enlace de cobro que se le muestra al cliente. <strong>El enlace tiene el valor fijo del
+              cobro</strong>: si cambias el precio de arriba, genera un enlace nuevo por ese valor y pégalo aquí.
+              <?php if (!empty($p['payment_link'])): ?>
+                <a href="<?= e($p['payment_link']) ?>" target="_blank" rel="noopener noreferrer">Probar el enlace actual</a>
+              <?php endif; ?>
+            </div>
           </div>
 
           <div class="form-grid" style="margin-top:18px">

@@ -138,15 +138,15 @@ include __DIR__ . '/../includes/site_header.php';
               <tbody>
                 <?php foreach ($orders as $o): [$st, $cls] = status_label($o['status']); ?>
                   <tr>
-                    <td><b><?= e($o['external_reference']) ?></b><?php if ($o['mp_payment_id']): ?><small>Pago MP #<?= e($o['mp_payment_id']) ?></small><?php endif; ?></td>
+                    <td><b><?= e($o['external_reference']) ?></b><?php if ($o['mp_status_detail']): ?><small><?= e($o['mp_status_detail']) ?></small><?php endif; ?></td>
                     <td><?= e(plan($o['plan_code'])['name'] ?? $o['plan_code']) ?><?php if ($o['is_demo']): ?><small>Pago simulado (demo)</small><?php endif; ?></td>
                     <td><?= fmt_date($o['created_at'], true) ?></td>
                     <td><?= money($o['amount']) ?></td>
                     <td><span class="badge badge-<?= $cls ?>"><?= $st ?></span></td>
                     <td>
-                      <?php if (in_array($o['status'], ['pending', 'rejected', 'cancelled'], true)): ?>
+                      <?php if (in_array($o['status'], ['pending', 'in_process', 'rejected', 'cancelled'], true)): ?>
                         <a class="btn btn-blue btn-sm" href="<?= url('pago/pagar.php?ref=' . urlencode($o['external_reference'])) ?>">
-                          <?= $o['payment_type'] === 'efecty' && $o['status'] === 'pending' ? 'Ver recibo' : 'Pagar' ?></a>
+                          <?= $o['status'] === 'in_process' ? 'Ver estado' : 'Pagar' ?></a>
                       <?php endif; ?>
                     </td>
                   </tr>

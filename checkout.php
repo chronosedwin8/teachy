@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/includes/mercadopago.php';
+require_once __DIR__ . '/includes/pedidos.php';
 
 $planCode = (string) ($_GET['plan'] ?? $_POST['plan'] ?? 'escuela');
 $selected = plan($planCode);
@@ -57,15 +57,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $reference = 'ORD-' . date('ymd') . '-' . strtoupper(bin2hex(random_bytes(5)));
-            $pdo->prepare('INSERT INTO orders (user_id, plan_code, amount, currency, external_reference, is_demo) VALUES (?, ?, ?, ?, ?, ?)')
-                ->execute([$userId, $selected['code'], $selected['price'], CURRENCY, $reference, is_demo_mode() ? 1 : 0]);
+            $pdo->prepare('INSERT INTO orders (user_id, plan_code, amount, currency, external_reference) VALUES (?, ?, ?, ?, ?)')
+                ->execute([$userId, $selected['code'], $selected['price'], CURRENCY, $reference]);
             $orderId = (int) $pdo->lastInsertId();
             $pdo->commit();
         } catch (Throwable $ex) {
             if ($pdo->inTransaction()) {
                 $pdo->rollBack();
             }
-            log_payment('checkout_error', ['error' => $ex->getMessage()]);
+            log_event('checkout_error', ['error' => $ex->getMessage()]);
             $errors[] = 'No fue posible registrar el pedido. Intente de nuevo.';
         }
 
@@ -98,10 +98,6 @@ include __DIR__ . '/includes/site_header.php';
         <?= csrf_field() ?>
         <input type="hidden" name="plan" value="<?= e($selected['code']) ?>">
         <?php include __DIR__ . '/includes/flash.php'; ?>
-        <?php if (is_demo_mode()): ?>
-          <div class="demo-banner">Modo demostración (entorno local): no se realizará ningún cobro.</div>
-        <?php endif; ?>
-
         <?php if ($user): ?>
           <div class="alert alert-info">Comprando como <strong><?= e($user['name']) ?></strong> (<?= e($user['email']) ?>).
             <a href="<?= url('portal/logout.php') ?>">¿No eres tú?</a></div>

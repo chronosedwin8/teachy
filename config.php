@@ -2,7 +2,7 @@
 /**
  * Configuración general del sitio.
  *
- * Las credenciales (base de datos y Mercado Pago) NO se guardan en este archivo: se definen en
+ * Las credenciales (base de datos y cuenta de administrador) NO se guardan en este archivo: van en
  * `config.secrets.php`, que queda fuera del repositorio. Copie `config.secrets.example.php`
  * como `config.secrets.php` y complete los valores de cada servidor.
  */
@@ -50,18 +50,10 @@ cfg('DB_USER', 'root');
 cfg('DB_PASS', '');
 
 // ---------------------------------------------------------------
-// Mercado Pago (Colombia - COP). Credenciales en config.secrets.php.
-// Panel: https://www.mercadopago.com.co/developers/panel/app
+// Cobros: se usan enlaces de pago de Mercado Pago, uno por plan.
+// El enlace de cada plan se define en $PLANS y se puede cambiar desde
+// Administración > Precios sin tocar este archivo.
 // ---------------------------------------------------------------
-cfg('MP_PUBLIC_KEY', '');
-cfg('MP_ACCESS_TOKEN', '');
-cfg('MP_WEBHOOK_SECRET', '');
-// URL que recibe las notificaciones de pago (solo se envía en producción, https).
-cfg('MP_NOTIFICATION_URL', IS_PRODUCTION ? BASE_URL . '/pago/webhook.php' : '');
-// En localhost se mantiene el pago simulado para no generar cobros reales durante pruebas.
-cfg('MP_LIVE_ON_LOCALHOST', false);
-// Nombre que verá el cliente en el extracto de su tarjeta (máx. 22 caracteres, sin tildes).
-cfg('MP_STATEMENT_DESCRIPTOR', 'EDUNOVA');
 cfg('CURRENCY', 'COP');
 
 // ---------------------------------------------------------------
@@ -80,8 +72,9 @@ $PLANS = [
         'price'       => 4500000,
         'seats'       => 60,
         'campuses'    => 1,
-        'months'      => 12,
-        'description' => 'Para una institución educativa con una sede.',
+        'months'       => 12,
+        'payment_link' => 'https://mpago.li/1NqjH7q',
+        'description'  => 'Para una institución educativa con una sede.',
         'features'    => [
             'Hasta 60 usuarios (docentes y directivos)',
             '1 sede educativa',
@@ -99,8 +92,9 @@ $PLANS = [
         'price'       => 7500000,
         'seats'       => 250,
         'campuses'    => 5,
-        'months'      => 12,
-        'description' => 'Para redes de colegios, secretarías y grupos con varias sedes.',
+        'months'       => 12,
+        'payment_link' => 'https://mpago.li/2ZDsqn6',
+        'description'  => 'Para redes de colegios, secretarías y grupos con varias sedes.',
         'features'    => [
             'Hasta 250 usuarios en todas las sedes',
             'Hasta 5 sedes o instituciones',

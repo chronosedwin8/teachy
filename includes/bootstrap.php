@@ -108,14 +108,6 @@ function member_roles(): array
     return $MEMBER_ROLES;
 }
 
-/** Pago simulado: sin credenciales, o en localhost salvo que se habilite MP_LIVE_ON_LOCALHOST. */
-function is_demo_mode(): bool
-{
-    if (trim(MP_ACCESS_TOKEN) === '') {
-        return true;
-    }
-    return !IS_PRODUCTION && !MP_LIVE_ON_LOCALHOST;
-}
 
 // ---------------------------------------------------------------
 // CSRF

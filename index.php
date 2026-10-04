@@ -48,6 +48,7 @@ $faqs = [
     ['¿Qué pasa con los datos de mis estudiantes?', 'Los datos se tratan conforme a la Ley 1581 de 2012 de protección de datos personales. La institución es dueña de su información y puede solicitar su exportación o eliminación.'],
 ];
 
+$extraCss = ['assets/css/legal.css'];
 include __DIR__ . '/includes/site_header.php';
 ?>
 
@@ -301,6 +302,16 @@ include __DIR__ . '/includes/site_header.php';
         </tbody>
       </table>
     </div>
+
+    <section class="legal-links reveal" id="legal">
+      <h3>Información legal</h3>
+      <p>Antes de comprar, consulta las condiciones del servicio, cómo tratamos tus datos y cómo solicitar una devolución.</p>
+      <div class="links">
+        <a href="<?= url('terminos.php') ?>"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Términos y condiciones</a>
+        <a href="<?= url('privacidad.php') ?>"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Política de privacidad</a>
+        <a href="<?= url('reembolsos.php') ?>"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1015.3-6.4M21 3v6h-6"/></svg>Política de reembolso</a>
+      </div>
+    </section>
   </div>
 </section>
 

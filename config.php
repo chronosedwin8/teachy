@@ -29,6 +29,20 @@ cfg('CONTACT_WHATSAPP', '573000000000'); // solo dígitos, con indicativo de pa�
 cfg('SELLER_COUNTRY', 'España');         // país desde el que opera el comercio
 
 // ---------------------------------------------------------------
+// Datos legales del titular del sitio (aparecen en los documentos legales).
+// IMPORTANTE: complete la razón social, el NIF y la dirección antes de solicitar
+// la revisión del dominio en Paddle o cualquier otra pasarela.
+// ---------------------------------------------------------------
+cfg('COMPANY_LEGAL_NAME', '');            // p. ej. "EduNova Learning, S.L."
+cfg('COMPANY_TAX_ID', '');                // NIF / CIF
+cfg('COMPANY_ADDRESS', '');               // calle y número
+cfg('COMPANY_CITY', '');                  // código postal, ciudad y país
+cfg('SUPPORT_EMAIL', CONTACT_EMAIL);      // correo de atención al cliente
+cfg('LEGAL_EMAIL', CONTACT_EMAIL);        // correo para asuntos legales y privacidad
+cfg('REFUND_DAYS', 14);                   // días para solicitar la devolución
+cfg('LEGAL_UPDATED', '2026-10-04');       // última actualización de los documentos
+
+// ---------------------------------------------------------------
 // Entorno: producción cuando el sitio se sirve desde el dominio público.
 // nginx redirige teachy.es → www.teachy.es, por eso el host canónico lleva www.
 // ---------------------------------------------------------------

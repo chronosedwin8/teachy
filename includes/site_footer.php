@@ -33,8 +33,9 @@
         <ul>
           <li><a href="mailto:<?= e(CONTACT_EMAIL) ?>"><?= e(CONTACT_EMAIL) ?></a></li>
           <li><a href="https://wa.me/<?= e(CONTACT_WHATSAPP) ?>" target="_blank" rel="noopener">WhatsApp ventas</a></li>
-          <li><a href="#">Términos y condiciones</a></li>
-          <li><a href="#">Política de privacidad</a></li>
+          <li><a href="<?= url('terminos.php') ?>">Términos y condiciones</a></li>
+          <li><a href="<?= url('privacidad.php') ?>">Política de privacidad</a></li>
+          <li><a href="<?= url('reembolsos.php') ?>">Política de reembolso</a></li>
         </ul>
       </div>
     </div>

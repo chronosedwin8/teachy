@@ -24,8 +24,8 @@ function cfg(string $name, mixed $value): void
 // ---------------------------------------------------------------
 cfg('BRAND_NAME', 'EduNova');
 cfg('BRAND_TAGLINE', 'El sistema de aprendizaje con IA para toda la escuela');
-cfg('CONTACT_EMAIL', 'ventas@edunova.co');
-cfg('CONTACT_WHATSAPP', '573000000000'); // solo dígitos, con indicativo de país
+cfg('CONTACT_EMAIL', 'gestion@grupologiclatam.com');
+cfg('CONTACT_WHATSAPP', ''); // vacío = no se muestra teléfono/WhatsApp en el sitio
 cfg('SELLER_COUNTRY', 'España');         // país desde el que opera el comercio
 
 // ---------------------------------------------------------------
@@ -33,7 +33,7 @@ cfg('SELLER_COUNTRY', 'España');         // país desde el que opera el comerci
 // IMPORTANTE: complete la razón social, el NIF y la dirección antes de solicitar
 // la revisión del dominio en Paddle o cualquier otra pasarela.
 // ---------------------------------------------------------------
-cfg('COMPANY_LEGAL_NAME', '');            // p. ej. "EduNova Learning, S.L."
+cfg('COMPANY_LEGAL_NAME', 'Grupo Logic SAS Latinoamerica');
 cfg('COMPANY_TAX_ID', '');                // NIF / CIF
 cfg('COMPANY_ADDRESS', '');               // calle y número
 cfg('COMPANY_CITY', '');                  // código postal, ciudad y país
@@ -97,7 +97,7 @@ $PLANS = [
             'Corrección asistida y reportes de desempeño',
             'Materiales accesibles e inclusivos',
             'Capacitación inicial en línea',
-            'Soporte por correo y WhatsApp',
+            'Soporte por correo electrónico',
         ],
     ],
     'volumen' => [

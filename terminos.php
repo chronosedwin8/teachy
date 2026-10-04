@@ -87,8 +87,8 @@ include __DIR__ . '/includes/site_header.php';
 
       <h2>10. Disponibilidad y soporte</h2>
       <p>Trabajamos para mantener el servicio disponible de forma continua, pero puede haber interrupciones por
-        mantenimiento, actualizaciones o causas ajenas a nuestro control. El soporte se presta por correo electrónico y
-        WhatsApp en días hábiles, con los alcances que incluya el plan contratado.</p>
+        mantenimiento, actualizaciones o causas ajenas a nuestro control. El soporte se presta por correo electrónico
+        en días hábiles, con los alcances que incluya el plan contratado.</p>
 
       <h2>11. Protección de datos</h2>
       <p>El tratamiento de datos personales se rige por nuestra <a href="<?= url('privacidad.php') ?>">Política de

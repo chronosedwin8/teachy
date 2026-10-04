@@ -17,7 +17,6 @@ $datosPendientes = COMPANY_LEGAL_NAME === '' || COMPANY_TAX_ID === '' || COMPANY
     <?php elseif (COMPANY_CITY !== ''): ?><li><strong>Domicilio:</strong> <?= e(COMPANY_CITY) ?></li><?php endif; ?>
     <li><strong>País desde el que se opera:</strong> <?= e(SELLER_COUNTRY) ?></li>
     <li><strong>Sitio web:</strong> <a href="<?= e(BASE_URL) ?>"><?= e(preg_replace('#^https?://#', '', BASE_URL)) ?></a></li>
-    <li><strong>Atención al cliente:</strong> <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a>
-      · <a href="https://wa.me/<?= e(CONTACT_WHATSAPP) ?>" target="_blank" rel="noopener">WhatsApp</a></li>
+    <li><strong>Atención al cliente:</strong> <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a></li>
   </ul>
 </div>

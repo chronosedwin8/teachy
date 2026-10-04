@@ -32,7 +32,6 @@
         <h4>Contacto</h4>
         <ul>
           <li><a href="mailto:<?= e(CONTACT_EMAIL) ?>"><?= e(CONTACT_EMAIL) ?></a></li>
-          <li><a href="https://wa.me/<?= e(CONTACT_WHATSAPP) ?>" target="_blank" rel="noopener">WhatsApp ventas</a></li>
           <li><a href="<?= url('terminos.php') ?>">Términos y condiciones</a></li>
           <li><a href="<?= url('privacidad.php') ?>">Política de privacidad</a></li>
           <li><a href="<?= url('reembolsos.php') ?>">Política de reembolso</a></li>
@@ -45,9 +44,6 @@
     </div>
   </div>
 </footer>
-<a class="wa-float" href="https://wa.me/<?= e(CONTACT_WHATSAPP) ?>?text=<?= rawurlencode('Hola, quiero información sobre las licencias de ' . BRAND_NAME) ?>" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
-  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.2-.3.2-.6.1a8.2 8.2 0 01-4-3.5c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 00-.9.4 3.7 3.7 0 00-1.1 2.7 6.4 6.4 0 001.3 3.4 14.6 14.6 0 005.6 4.9c2.1.9 2.9 1 3.9.8a3.3 3.3 0 002.2-1.5 2.7 2.7 0 00.2-1.5c-.1-.2-.3-.2-.6-.4zM12 21.8a9.8 9.8 0 01-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1112 21.8zM12 0a12 12 0 00-10.3 18L0 24l6.2-1.6A12 12 0 1012 0z"/></svg>
-</a>
 <script src="<?= url('assets/js/main.js') ?>?v=1"></script>
 </body>
 </html>

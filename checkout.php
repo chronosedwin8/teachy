@@ -117,7 +117,7 @@ include __DIR__ . '/includes/site_header.php';
         <div class="form-grid">
           <div class="field full"><label for="institution">Institución educativa / razón social</label><input class="input" id="institution" name="institution" value="<?= old('institution', $user['institution'] ?? '') ?>" required></div>
           <div class="field"><label for="tax_id">NIT o documento</label><input class="input" id="tax_id" name="tax_id" value="<?= old('tax_id', $user['tax_id'] ?? '') ?>" required placeholder="900.123.456-7"></div>
-          <div class="field"><label for="phone">Teléfono / WhatsApp</label><input class="input" id="phone" name="phone" value="<?= old('phone', $user['phone'] ?? '') ?>" required autocomplete="tel" placeholder="300 123 4567"></div>
+          <div class="field"><label for="phone">Teléfono de contacto</label><input class="input" id="phone" name="phone" value="<?= old('phone', $user['phone'] ?? '') ?>" required autocomplete="tel" placeholder="300 123 4567"></div>
           <div class="field full"><label for="city">Ciudad</label><input class="input" id="city" name="city" value="<?= old('city', $user['city'] ?? '') ?>" required placeholder="Bogotá D.C."></div>
           <div class="field full">
             <label class="check-line"><input type="checkbox" name="terms" value="1" <?= !empty($_POST['terms']) ? 'checked' : '' ?>>

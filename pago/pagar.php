@@ -54,8 +54,8 @@ include __DIR__ . '/../includes/site_header.php';
 
         <div class="card pay-card" style="padding:32px">
           <?php if ($link === ''): ?>
-            <div class="alert alert-error">Este plan no tiene un enlace de pago configurado. Escríbenos por WhatsApp
-              o al correo <?= e(CONTACT_EMAIL) ?> y te ayudamos a completar la compra.</div>
+            <div class="alert alert-error">Este plan no tiene un enlace de pago configurado. Escríbenos a
+              <?= e(CONTACT_EMAIL) ?> y te ayudamos a completar la compra.</div>
           <?php else: ?>
             <h2>Paga <?= money($order['amount']) ?></h2>
             <p class="muted">Al continuar se abrirá la pasarela de pago, donde puedes pagar con tarjeta de crédito o débito,
@@ -83,7 +83,7 @@ include __DIR__ . '/../includes/site_header.php';
           <div class="pay-foot">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
             <span>El pago se procesa en la pasarela; <?= e(BRAND_NAME) ?> no recibe ni almacena los datos de tu tarjeta.
-              ¿Dudas con tu pago? Escríbenos por WhatsApp o a <?= e(CONTACT_EMAIL) ?>.</span>
+              ¿Dudas con tu pago? Escríbenos a <?= e(CONTACT_EMAIL) ?>.</span>
           </div>
         </div>
       </div>

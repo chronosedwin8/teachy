@@ -27,8 +27,7 @@ include __DIR__ . '/includes/site_header.php';
         activado porque el pago está en verificación, basta con pedirnos la anulación del pedido.</p>
 
       <h2>2. Cómo solicitarla</h2>
-      <p>Escríbanos a <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a> o por
-        <a href="https://wa.me/<?= e(CONTACT_WHATSAPP) ?>" target="_blank" rel="noopener">WhatsApp</a> indicando:</p>
+      <p>Escríbanos a <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a> indicando:</p>
       <ul>
         <li>La referencia del pedido (aparece en su portal, en "Pedidos y pagos").</li>
         <li>El correo con el que compró la licencia.</li>
@@ -76,8 +75,7 @@ include __DIR__ . '/includes/site_header.php';
         es igual o más favorable.</p>
 
       <h2>9. Contacto</h2>
-      <p>Atención al cliente: <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a> ·
-        <a href="https://wa.me/<?= e(CONTACT_WHATSAPP) ?>" target="_blank" rel="noopener">WhatsApp</a>.
+      <p>Atención al cliente: <a href="mailto:<?= e(SUPPORT_EMAIL) ?>"><?= e(SUPPORT_EMAIL) ?></a>.
         Respondemos en días hábiles.</p>
     </article>
   </div>

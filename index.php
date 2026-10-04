@@ -349,7 +349,7 @@ include __DIR__ . '/includes/site_header.php';
       </div>
       <div class="btns">
         <a class="btn btn-white" href="#precios">Ver precios</a>
-        <a class="btn btn-blue" href="https://wa.me/<?= e(CONTACT_WHATSAPP) ?>" target="_blank" rel="noopener">Hablar con ventas</a>
+        <a class="btn btn-blue" href="mailto:<?= e(CONTACT_EMAIL) ?>">Escribir a ventas</a>
       </div>
     </div>
   </div>

@@ -38,14 +38,10 @@
 .receipt-detail dl > div { display: flex; justify-content: space-between; gap: 14px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: .93rem; }
 .receipt-detail dt { color: var(--slate); font-weight: 600; margin: 0; }
 .receipt-detail dd { margin: 0; font-weight: 700; white-space: nowrap; }
-.receipt-detail .muted-row dt, .receipt-detail .muted-row dd { color: var(--slate-2); font-weight: 600; }
-.receipt-note { margin: 12px 0 0; font-size: .8rem; color: var(--slate-2); line-height: 1.5; }
 
 .receipt-sum { background: var(--ink); color: var(--white); border-radius: 20px; padding: 24px 26px; }
 .receipt-sum > span { display: block; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--slate-3); }
 .receipt-sum > strong { display: block; font-size: 2rem; letter-spacing: -.02em; margin-top: 4px; }
-.receipt-sum-sub { display: block; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, .18); font-size: .85rem !important; font-weight: 600; letter-spacing: 0 !important; text-transform: none !important; color: var(--lav) !important; }
-.receipt-sum-sub strong { display: block; font-size: 1.15rem; color: var(--white); margin-top: 2px; }
 
 .receipt-foot { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--lav-2); }
 .receipt-foot p { margin: 0 0 8px; font-size: .8rem; color: var(--slate-2); line-height: 1.55; }
@@ -68,7 +64,5 @@
   .receipt { border: 0; box-shadow: none; border-radius: 0; padding: 0; max-width: none; }
   .receipt-sum { background: #fff !important; color: #0F151A !important; border: 2px solid #0F151A; border-radius: 12px; }
   .receipt-sum > span { color: #597080 !important; }
-  .receipt-sum-sub { color: #323E47 !important; border-top-color: #D5E1ED !important; }
-  .receipt-sum-sub strong { color: #0F151A !important; }
   .receipt-table { page-break-inside: avoid; }
 }

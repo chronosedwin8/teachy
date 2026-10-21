@@ -27,8 +27,6 @@ if ($order['status'] !== 'approved') {
 $plan = plan($order['plan_code']);
 $paidAt = $order['paid_at'] ?: $order['created_at'];
 $number = 'CP-' . date('Y', strtotime($paidAt)) . '-' . str_pad((string) $order['id'], 5, '0', STR_PAD_LEFT);
-$received = $order['amount_received'] !== null ? (float) $order['amount_received'] : null;
-$fees = $received !== null ? (float) $order['amount'] - $received : null;
 
 $pageTitle = 'Comprobante ' . $number . ' | ' . BRAND_NAME;
 $extraCss = ['assets/css/portal.css', 'assets/css/comprobante.css'];
@@ -119,24 +117,12 @@ include __DIR__ . '/../includes/site_header.php';
           <h3>Detalle</h3>
           <dl>
             <div><dt>Valor de la licencia</dt><dd><?= money($order['amount']) ?></dd></div>
-            <?php if ($received !== null): ?>
-              <div><dt>Total recibido el <?= e(mb_strtolower(fmt_date($paidAt))) ?></dt><dd><?= money($received) ?></dd></div>
-              <?php if ($fees > 0): ?>
-                <div class="muted-row"><dt>Comisiones de la pasarela de pago</dt><dd>−<?= money($fees) ?></dd></div>
-              <?php endif; ?>
-            <?php endif; ?>
             <div><dt>Estado</dt><dd>Pago confirmado</dd></div>
           </dl>
-          <p class="receipt-note">Las comisiones de la pasarela de pago las descuenta el proveedor del servicio de pagos
-            y no afectan el valor pagado por el cliente ni las condiciones de la licencia.</p>
         </div>
         <div class="receipt-sum">
           <span>Total pagado</span>
           <strong><?= money($order['amount']) ?></strong>
-          <?php if ($received !== null): ?>
-            <span class="receipt-sum-sub">Total recibido el <?= e(mb_strtolower(fmt_date($paidAt))) ?>:
-              <strong><?= money($received) ?></strong></span>
-          <?php endif; ?>
         </div>
       </section>
 

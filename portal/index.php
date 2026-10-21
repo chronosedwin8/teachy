@@ -144,7 +144,9 @@ include __DIR__ . '/../includes/site_header.php';
                     <td><?= money($o['amount']) ?></td>
                     <td><span class="badge badge-<?= $cls ?>"><?= $st ?></span></td>
                     <td>
-                      <?php if (in_array($o['status'], ['pending', 'in_process', 'rejected', 'cancelled'], true)): ?>
+                      <?php if ($o['status'] === 'approved'): ?>
+                        <a class="btn btn-outline btn-sm" href="<?= url('portal/comprobante.php?ref=' . urlencode($o['external_reference'])) ?>">Ver comprobante</a>
+                      <?php elseif (in_array($o['status'], ['pending', 'in_process', 'rejected', 'cancelled'], true)): ?>
                         <a class="btn btn-blue btn-sm" href="<?= url('pago/pagar.php?ref=' . urlencode($o['external_reference'])) ?>">
                           <?= $o['status'] === 'in_process' ? 'Ver estado' : 'Pagar' ?></a>
                       <?php endif; ?>

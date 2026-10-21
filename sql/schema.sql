@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS orders (
     payment_type       VARCHAR(40)  NULL,
     mp_resource_url    VARCHAR(600) NULL,
     mp_expires_at      DATETIME     NULL,
+    amount_received    DECIMAL(14,2) NULL,
     is_demo            TINYINT(1) NOT NULL DEFAULT 0,
     created_at         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

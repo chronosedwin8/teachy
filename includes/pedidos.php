@@ -88,10 +88,12 @@ function create_license_for_order(int $orderId): void
         return;
     }
 
+    // La vigencia arranca el día del pago cuando se conoce; si no, en el momento de la activación
+    $inicio = $order['paid_at'] ?: date('Y-m-d H:i:s');
     $pdo->prepare('INSERT INTO licenses (user_id, order_id, plan_code, license_key, seats, campuses, status, starts_at, expires_at)
-                   VALUES (?, ?, ?, ?, ?, ?, "active", NOW(), DATE_ADD(NOW(), INTERVAL ? MONTH))')
+                   VALUES (?, ?, ?, ?, ?, ?, "active", ?, DATE_ADD(?, INTERVAL ? MONTH))')
         ->execute([$order['user_id'], $orderId, $plan['code'], generate_license_key($plan['code']),
-            $plan['seats'], $plan['campuses'], $plan['months']]);
+            $plan['seats'], $plan['campuses'], $inicio, $inicio, $plan['months']]);
 
     // El comprador queda registrado como primer usuario (administrador) de la licencia
     $licenseId = (int) $pdo->lastInsertId();

@@ -36,6 +36,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         set_order_status($order, 'approved', 'Pago confirmado por ' . $admin['email']);
         flash('success', 'Pedido aprobado y licencia activada.');
         redirect('admin/pedidos.php');
+    } elseif ($action === 'pago') {
+        $fecha = (string) ($_POST['paid_at'] ?? '');
+        $neto = (float) preg_replace('/[^0-9]/', '', (string) ($_POST['amount_received'] ?? ''));
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) {
+            flash('error', 'Indique la fecha en que se recibió el pago.');
+        } elseif ($neto <= 0 || $neto > (float) $order['amount']) {
+            flash('error', 'El neto recibido debe ser mayor que cero y no superior al valor cobrado.');
+        } else {
+            $pdo->prepare('UPDATE orders SET paid_at = ?, amount_received = ? WHERE id = ?')
+                ->execute([$fecha . ' 12:00:00', $neto, $order['id']]);
+            set_order_status(find_order_by_reference($order['external_reference']), 'approved', 'Pago confirmado por ' . $admin['email']);
+            flash('success', 'Pago registrado y licencia activada. El cliente ya puede ver su comprobante.');
+        }
+        redirect('admin/pedidos.php');
     } elseif ($action === 'cancel') {
         set_order_status($order, 'cancelled', 'Cancelado por ' . $admin['email']);
         flash('success', 'Pedido cancelado. Si tenía licencia, quedó suspendida.');
@@ -121,11 +135,15 @@ include __DIR__ . '/../includes/site_header.php';
               <?php if ($o['mp_status_detail']): ?><small><?= e($o['mp_status_detail']) ?></small><?php endif; ?></td>
             <td><b><?= e($o['institution'] ?: $o['name']) ?></b><small><?= e($o['email']) ?></small></td>
             <td><?= e(plan($o['plan_code'])['name'] ?? $o['plan_code']) ?><?= $o['is_demo'] ? '<small>Simulado</small>' : '' ?></td>
-            <td style="white-space:nowrap"><?= money($o['amount']) ?></td>
+            <td style="white-space:nowrap"><?= money($o['amount']) ?>
+              <?php if ($o['amount_received'] !== null): ?><small>Recibido: <?= money($o['amount_received']) ?></small><?php endif; ?>
+              <?php if ($o['paid_at']): ?><small>Pagado: <?= fmt_date($o['paid_at']) ?></small><?php endif; ?></td>
             <td><span class="badge badge-<?= $cls ?>"><?= $st ?></span></td>
             <td>
               <div class="toolbar" style="gap:6px;flex-wrap:nowrap">
                 <?php if ($o['license_id']): ?><a class="icon-btn" href="<?= url('portal/licencia.php?id=' . $o['license_id']) ?>">Licencia</a><?php endif; ?>
+                <?php if ($o['status'] === 'approved'): ?><a class="icon-btn" href="<?= url('portal/comprobante.php?ref=' . urlencode($o['external_reference'])) ?>">Comprobante</a><?php endif; ?>
+                <?php if ($o['status'] !== 'approved'): ?><button class="icon-btn" type="button" data-toggle="pay<?= (int) $o['id'] ?>">Registrar pago</button><?php endif; ?>
                 <?php foreach ([['approve', 'Aprobar', '¿Aprobar este pedido manualmente y activar la licencia?'], ['cancel', 'Cancelar', '¿Cancelar este pedido? La licencia quedará suspendida.'], ['delete', 'Eliminar', '¿Eliminar definitivamente este pedido?']] as [$act, $label, $confirm]):
                     if ($act === 'approve' && $o['status'] === 'approved') continue;
                     if ($act === 'cancel' && in_array($o['status'], ['cancelled', 'refunded'], true)) continue;
@@ -137,6 +155,14 @@ include __DIR__ . '/../includes/site_header.php';
                   </form>
                 <?php endforeach; ?>
               </div>
+              <?php if ($o['status'] !== 'approved'): ?>
+                <form method="post" id="pay<?= (int) $o['id'] ?>" hidden class="toolbar" style="margin-top:8px;gap:6px;flex-wrap:nowrap;align-items:center">
+                  <?= csrf_field() ?><input type="hidden" name="action" value="pago"><input type="hidden" name="order_id" value="<?= (int) $o['id'] ?>">
+                  <input class="input" type="date" name="paid_at" value="<?= date('Y-m-d') ?>" required style="padding:8px 10px;font-size:.85rem" title="Fecha en que se recibió el pago">
+                  <input class="input" name="amount_received" inputmode="numeric" required placeholder="Neto recibido" value="<?= e(number_format((float) $o['amount'], 0, ',', '.')) ?>" style="padding:8px 10px;font-size:.85rem;max-width:130px" title="Valor acreditado en la cuenta, después de comisiones">
+                  <button class="icon-btn" type="submit">Aprobar con pago</button>
+                </form>
+              <?php endif; ?>
             </td>
           </tr>
         <?php endforeach; ?>

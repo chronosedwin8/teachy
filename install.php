@@ -47,6 +47,7 @@ try {
         ['orders', 'payment_type', 'VARCHAR(40) NULL AFTER payment_method'],
         ['orders', 'mp_resource_url', 'VARCHAR(600) NULL AFTER payment_type'],
         ['orders', 'mp_expires_at', 'DATETIME NULL AFTER mp_resource_url'],
+        ['orders', 'amount_received', 'DECIMAL(14,2) NULL AFTER mp_expires_at'],
     ];
     foreach ($migrations as [$table, $column, $definition]) {
         $exists = $pdo->query('SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ' . $pdo->quote(DB_NAME)

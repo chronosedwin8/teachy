@@ -5,6 +5,7 @@ $sections = [
     'pedidos'   => 'Pedidos',
     'licencias' => 'Licencias',
     'planes'    => 'Precios',
+    'facturacion' => 'Facturación',
     'usuarios'  => 'Usuarios',
     'logs'      => 'Registro de pagos',
 ];

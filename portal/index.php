@@ -15,11 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $institution = trim((string) ($_POST['institution'] ?? ''));
         $taxId = trim((string) ($_POST['tax_id'] ?? ''));
         $city = trim((string) ($_POST['city'] ?? ''));
+        $address = trim((string) ($_POST['address'] ?? ''));
+        $country = trim((string) ($_POST['country'] ?? ''));
         if (mb_strlen($name) < 3) $errors[] = 'El nombre es demasiado corto.';
         if (mb_strlen($institution) < 3) $errors[] = 'Escriba el nombre de la institución.';
         if (!$errors) {
-            db()->prepare('UPDATE users SET name = ?, phone = ?, institution = ?, tax_id = ?, city = ? WHERE id = ?')
-                ->execute([$name, $phone, $institution, $taxId, $city, $user['id']]);
+            db()->prepare('UPDATE users SET name = ?, phone = ?, institution = ?, tax_id = ?, city = ?, address = ?, country = ? WHERE id = ?')
+                ->execute([$name, $phone, $institution, $taxId, $city, $address, $country, $user['id']]);
             flash('success', 'Datos actualizados.');
             redirect('portal/index.php?tab=cuenta');
         }
@@ -146,6 +148,7 @@ include __DIR__ . '/../includes/site_header.php';
                     <td>
                       <?php if ($o['status'] === 'approved'): ?>
                         <a class="btn btn-outline btn-sm" href="<?= url('portal/comprobante.php?ref=' . urlencode($o['external_reference'])) ?>">Ver comprobante</a>
+                        <a class="btn btn-outline btn-sm" href="<?= url('portal/factura.php?ref=' . urlencode($o['external_reference'])) ?>">Descargar factura</a>
                       <?php elseif (in_array($o['status'], ['pending', 'in_process', 'rejected', 'cancelled'], true)): ?>
                         <a class="btn btn-blue btn-sm" href="<?= url('pago/pagar.php?ref=' . urlencode($o['external_reference'])) ?>">
                           <?= $o['status'] === 'in_process' ? 'Ver estado' : 'Pagar' ?></a>
@@ -205,7 +208,10 @@ include __DIR__ . '/../includes/site_header.php';
             <div class="field full"><label>Institución / razón social</label><input class="input" name="institution" value="<?= e($user['institution']) ?>" required></div>
             <div class="field"><label>NIT o documento</label><input class="input" name="tax_id" value="<?= e($user['tax_id']) ?>"></div>
             <div class="field"><label>Teléfono</label><input class="input" name="phone" value="<?= e($user['phone']) ?>"></div>
-            <div class="field full"><label>Ciudad</label><input class="input" name="city" value="<?= e($user['city']) ?>"></div>
+            <div class="field full"><label>Dirección</label><input class="input" name="address" value="<?= e($user['address'] ?? '') ?>" autocomplete="street-address"></div>
+            <div class="field"><label>Ciudad</label><input class="input" name="city" value="<?= e($user['city']) ?>"></div>
+            <div class="field"><label>País</label><input class="input" name="country" value="<?= e($user['country'] ?? '') ?>" autocomplete="country-name"></div>
+            <div class="field full"><div class="hint">Estos datos aparecen en tus facturas. Una factura ya emitida no cambia si los modificas.</div></div>
           </div>
           <button class="btn btn-primary" style="margin-top:20px">Guardar cambios</button>
         </form>

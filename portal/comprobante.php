@@ -26,7 +26,7 @@ if ($order['status'] !== 'approved') {
 
 $plan = plan($order['plan_code']);
 $paidAt = $order['paid_at'] ?: $order['created_at'];
-$number = 'CP-' . date('Y', strtotime($paidAt)) . '-' . str_pad((string) $order['id'], 5, '0', STR_PAD_LEFT);
+$number = receipt_number($order);
 
 $pageTitle = 'Comprobante ' . $number . ' | ' . BRAND_NAME;
 $extraCss = ['assets/css/portal.css', 'assets/css/comprobante.css'];
@@ -36,10 +36,13 @@ include __DIR__ . '/../includes/site_header.php';
   <div class="container">
     <div class="receipt-actions">
       <a href="<?= url('portal/index.php?tab=pedidos') ?>">← Volver a mis pedidos</a>
+      <span class="receipt-actions-btns">
+      <a class="btn btn-outline btn-sm" href="<?= url('portal/factura.php?ref=' . urlencode($order['external_reference'])) ?>">Ver factura</a>
       <button class="btn btn-primary btn-sm" type="button" onclick="window.print()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5h20v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>
         Imprimir o guardar en PDF
       </button>
+      </span>
     </div>
 
     <article class="receipt">
@@ -47,13 +50,12 @@ include __DIR__ . '/../includes/site_header.php';
         <div class="receipt-brand">
           <?php include __DIR__ . '/../includes/logo.php'; ?>
           <div>
-            <strong><?= e(COMPANY_LEGAL_NAME !== '' ? COMPANY_LEGAL_NAME : BRAND_NAME) ?></strong>
-            <?php if (COMPANY_LEGAL_NAME !== ''): ?><span>Marca comercial <?= e(BRAND_NAME) ?></span><?php endif; ?>
-            <?php if (COMPANY_TAX_ID !== ''): ?><span>NIT <?= e(COMPANY_TAX_ID) ?></span><?php endif; ?>
-            <?php if (COMPANY_ADDRESS !== '' || COMPANY_CITY !== ''): ?>
-              <span><?= e(trim(COMPANY_ADDRESS . ' ' . COMPANY_CITY)) ?></span>
-            <?php endif; ?>
-            <span><?= e(SUPPORT_EMAIL) ?> · <?= e(preg_replace('#^https?://#', '', BASE_URL)) ?></span>
+            <?php $iss = invoice_issuer(); ?>
+            <strong><?= e($iss['name']) ?></strong>
+            <?php if ($iss['brand'] !== $iss['name']): ?><span>Marca comercial <?= e($iss['brand']) ?></span><?php endif; ?>
+            <?php if ($iss['tax_id'] !== ''): ?><span>NIF <?= e($iss['tax_id']) ?></span><?php endif; ?>
+            <?php if ($iss['address'] !== ''): ?><span><?= e($iss['address']) ?></span><?php endif; ?>
+            <span><?= e($iss['email']) ?> · <?= e($iss['web']) ?></span>
           </div>
         </div>
         <div class="receipt-id">

@@ -20,10 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (strlen($password) < 8) $errors[] = 'La contraseña debe tener al menos 8 caracteres.';
         if (!$errors) {
             try {
-                $pdo->prepare('INSERT INTO users (name, email, password_hash, institution, tax_id, phone, city, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+                $pdo->prepare('INSERT INTO users (name, email, password_hash, institution, tax_id, phone, city, address, country, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
                     ->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT), trim((string) ($_POST['institution'] ?? '')) ?: null,
                         trim((string) ($_POST['tax_id'] ?? '')) ?: null, trim((string) ($_POST['phone'] ?? '')) ?: null,
-                        trim((string) ($_POST['city'] ?? '')) ?: null, !empty($_POST['is_admin']) ? 1 : 0]);
+                        trim((string) ($_POST['city'] ?? '')) ?: null, trim((string) ($_POST['address'] ?? '')) ?: null,
+                        trim((string) ($_POST['country'] ?? '')) ?: null, !empty($_POST['is_admin']) ? 1 : 0]);
                 flash('success', "Usuario $email creado.");
                 redirect('admin/usuarios.php');
             } catch (PDOException $ex) {
@@ -115,6 +116,8 @@ include __DIR__ . '/../includes/site_header.php';
             <div class="field"><label>NIT</label><input class="input" name="tax_id" value="<?= old('tax_id') ?>"></div>
             <div class="field"><label>Teléfono</label><input class="input" name="phone" value="<?= old('phone') ?>"></div>
             <div class="field"><label>Ciudad</label><input class="input" name="city" value="<?= old('city') ?>"></div>
+            <div class="field"><label>Dirección</label><input class="input" name="address" value="<?= old('address') ?>"></div>
+            <div class="field"><label>País</label><input class="input" name="country" value="<?= old('country') ?>"></div>
             <div class="field" style="align-self:end"><label class="check-line"><input type="checkbox" name="is_admin" value="1"> <span>Administrador</span></label></div>
           </div>
           <button class="btn btn-primary" style="margin-top:16px" type="submit">Crear usuario</button>

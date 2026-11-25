@@ -33,10 +33,10 @@ cfg('SELLER_COUNTRY', 'España');         // país desde el que opera el comerci
 // IMPORTANTE: complete la razón social, el NIF y la dirección antes de solicitar
 // la revisión del dominio en Paddle o cualquier otra pasarela.
 // ---------------------------------------------------------------
-cfg('COMPANY_LEGAL_NAME', 'Grupo Logic SAS Latinoamerica');
-cfg('COMPANY_TAX_ID', '');                // NIF / CIF
-cfg('COMPANY_ADDRESS', '');               // calle y número
-cfg('COMPANY_CITY', '');                  // código postal, ciudad y país
+cfg('COMPANY_LEGAL_NAME', 'Grupo Logic SC');
+cfg('COMPANY_TAX_ID', '');                // NIF / CIF (pendiente de confirmar)
+cfg('COMPANY_ADDRESS', 'Calle Santa Isabel, 52'); // calle y número
+cfg('COMPANY_CITY', '28012 Madrid');      // código postal y ciudad (el país va en COMPANY_COUNTRY)
 cfg('SUPPORT_EMAIL', CONTACT_EMAIL);      // correo de atención al cliente
 cfg('LEGAL_EMAIL', CONTACT_EMAIL);        // correo para asuntos legales y privacidad
 cfg('REFUND_DAYS', 14);                   // días para solicitar la devolución
@@ -69,6 +69,17 @@ cfg('DB_PASS', '');
 // Administración > Precios sin tocar este archivo.
 // ---------------------------------------------------------------
 cfg('CURRENCY', 'COP');
+
+// ---------------------------------------------------------------
+// Facturación (España, RD 1619/2012). Los precios de los planes se entienden IVA incluido:
+// la factura desglosa base imponible y cuota a partir del total cobrado.
+// ---------------------------------------------------------------
+cfg('COMPANY_COUNTRY', 'España');          // país del domicilio fiscal del emisor
+cfg('VAT_RATE', 21);                       // tipo de IVA (%). 0 = la factura indica operación no sujeta
+cfg('VAT_EXEMPTION_NOTE', 'Operación no sujeta a IVA por reglas de localización (art. 69.Uno.2.º de la Ley 37/1992 del IVA).');
+// COP por 1 EUR. La cuota de IVA debe expresarse también en euros (art. 10 RD 1619/2012).
+// Se usa solo si el pedido no tiene su propio tipo de cambio (se registra al aprobar el pago).
+cfg('EUR_RATE_DEFAULT', 4500);
 
 // ---------------------------------------------------------------
 // Cuenta de administrador que crea install.php (valores en config.secrets.php)

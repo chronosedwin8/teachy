@@ -48,6 +48,10 @@ try {
         ['orders', 'mp_resource_url', 'VARCHAR(600) NULL AFTER payment_type'],
         ['orders', 'mp_expires_at', 'DATETIME NULL AFTER mp_resource_url'],
         ['orders', 'amount_received', 'DECIMAL(14,2) NULL AFTER mp_expires_at'],
+        ['orders', 'eur_rate', 'DECIMAL(14,6) NULL AFTER amount_received'],
+        ['orders', 'invoice_data', 'JSON NULL AFTER eur_rate'],
+        ['users', 'address', 'VARCHAR(190) NULL AFTER city'],
+        ['users', 'country', 'VARCHAR(80) NULL AFTER address'],
     ];
     foreach ($migrations as [$table, $column, $definition]) {
         $exists = $pdo->query('SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ' . $pdo->quote(DB_NAME)

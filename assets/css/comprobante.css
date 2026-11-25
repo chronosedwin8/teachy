@@ -4,6 +4,13 @@
 .receipt-actions { max-width: 860px; margin: 0 auto 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .receipt-actions a { font-weight: 700; }
 .receipt-actions svg { width: 17px; height: 17px; }
+.receipt-actions-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* Factura */
+.invoice-draft-note { max-width: 860px; margin: 0 auto 18px; padding: 14px 18px; border-radius: 14px; background: #FFF4D6; color: #5A4300; font-size: .9rem; line-height: 1.5; }
+.invoice.is-draft { outline: 3px dashed #E0B341; outline-offset: -3px; }
+.invoice-title { margin: 0 0 4px; font-size: 2.1rem; font-weight: 700; letter-spacing: .08em; line-height: 1; color: var(--ink); }
+.invoice-fx { margin: 12px 0 0; font-size: .82rem; color: var(--slate); line-height: 1.5; }
 
 .receipt {
   max-width: 860px; margin: 0 auto; background: var(--white);
@@ -57,7 +64,7 @@
 /* ---------- Impresión / PDF ---------- */
 @media print {
   @page { size: A4; margin: 14mm; }
-  .nav, .footer, .receipt-actions, .wa-float { display: none !important; }
+  .nav, .footer, .receipt-actions, .invoice-draft-note, .wa-float { display: none !important; }
   body { background: #fff; }
   .page-soft { padding: 0 !important; background: #fff !important; }
   .container { padding: 0 !important; max-width: none !important; }

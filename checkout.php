@@ -19,6 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $institution = trim((string) ($_POST['institution'] ?? ''));
     $taxId       = trim((string) ($_POST['tax_id'] ?? ''));
     $city        = trim((string) ($_POST['city'] ?? ''));
+    $address     = trim((string) ($_POST['address'] ?? ''));
+    $country     = trim((string) ($_POST['country'] ?? ''));
 
     if ($user) {
         $name = $user['name'];
@@ -39,7 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (mb_strlen($institution) < 3) $errors[] = 'Escriba el nombre de la institución.';
     if (!preg_match('/^[0-9.\- ]{5,20}$/', $taxId)) $errors[] = 'Escriba un NIT o documento válido (solo números, puntos o guiones).';
     if (!preg_match('/^[0-9+ ()\-]{7,20}$/', $phone)) $errors[] = 'Escriba un teléfono de contacto válido.';
+    if (mb_strlen($address) < 5) $errors[] = 'Escriba la dirección de la institución (se usa en la factura).';
     if ($city === '') $errors[] = 'Escriba la ciudad.';
+    if ($country === '') $errors[] = 'Escriba el país.';
     if (empty($_POST['terms'])) $errors[] = 'Debe aceptar los términos y la política de tratamiento de datos.';
 
     if (!$errors) {
@@ -47,12 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $pdo->beginTransaction();
             if ($user) {
-                $pdo->prepare('UPDATE users SET phone = ?, institution = ?, tax_id = ?, city = ? WHERE id = ?')
-                    ->execute([$phone, $institution, $taxId, $city, $user['id']]);
+                $pdo->prepare('UPDATE users SET phone = ?, institution = ?, tax_id = ?, city = ?, address = ?, country = ? WHERE id = ?')
+                    ->execute([$phone, $institution, $taxId, $city, $address, $country, $user['id']]);
                 $userId = (int) $user['id'];
             } else {
-                $pdo->prepare('INSERT INTO users (name, email, password_hash, phone, institution, tax_id, city) VALUES (?, ?, ?, ?, ?, ?, ?)')
-                    ->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT), $phone, $institution, $taxId, $city]);
+                $pdo->prepare('INSERT INTO users (name, email, password_hash, phone, institution, tax_id, city, address, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+                    ->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT), $phone, $institution, $taxId, $city, $address, $country]);
                 $userId = (int) $pdo->lastInsertId();
             }
 
@@ -118,7 +122,9 @@ include __DIR__ . '/includes/site_header.php';
           <div class="field full"><label for="institution">Institución educativa / razón social</label><input class="input" id="institution" name="institution" value="<?= old('institution', $user['institution'] ?? '') ?>" required></div>
           <div class="field"><label for="tax_id">NIT o documento</label><input class="input" id="tax_id" name="tax_id" value="<?= old('tax_id', $user['tax_id'] ?? '') ?>" required placeholder="900.123.456-7"></div>
           <div class="field"><label for="phone">Teléfono de contacto</label><input class="input" id="phone" name="phone" value="<?= old('phone', $user['phone'] ?? '') ?>" required autocomplete="tel" placeholder="300 123 4567"></div>
-          <div class="field full"><label for="city">Ciudad</label><input class="input" id="city" name="city" value="<?= old('city', $user['city'] ?? '') ?>" required placeholder="Bogotá D.C."></div>
+          <div class="field full"><label for="address">Dirección</label><input class="input" id="address" name="address" value="<?= old('address', $user['address'] ?? '') ?>" required autocomplete="street-address" placeholder="Calle 100 # 15-20"><div class="hint">Aparece en la factura.</div></div>
+          <div class="field"><label for="city">Ciudad</label><input class="input" id="city" name="city" value="<?= old('city', $user['city'] ?? '') ?>" required placeholder="Bogotá D.C."></div>
+          <div class="field"><label for="country">País</label><input class="input" id="country" name="country" value="<?= old('country', $user['country'] ?? 'Colombia') ?>" required autocomplete="country-name"></div>
           <div class="field full">
             <label class="check-line"><input type="checkbox" name="terms" value="1" <?= !empty($_POST['terms']) ? 'checked' : '' ?>>
               <span>Acepto los términos y condiciones, autorizo el tratamiento de mis datos personales y entiendo que es una compra de comercio electrónico internacional a un comercio establecido en <?= e(SELLER_COUNTRY) ?>, sin impuestos de países de Latinoamérica incluidos.</span></label>

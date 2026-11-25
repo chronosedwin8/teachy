@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS users (
     institution   VARCHAR(190) NULL,
     tax_id        VARCHAR(40)  NULL,
     city          VARCHAR(120) NULL,
+    address       VARCHAR(190) NULL,
+    country       VARCHAR(80)  NULL,
     is_admin      TINYINT(1) NOT NULL DEFAULT 0,
     created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_login_at DATETIME NULL
@@ -32,6 +34,8 @@ CREATE TABLE IF NOT EXISTS orders (
     mp_resource_url    VARCHAR(600) NULL,
     mp_expires_at      DATETIME     NULL,
     amount_received    DECIMAL(14,2) NULL,
+    eur_rate           DECIMAL(14,6) NULL,
+    invoice_data       JSON NULL,
     is_demo            TINYINT(1) NOT NULL DEFAULT 0,
     created_at         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -78,6 +82,13 @@ CREATE TABLE IF NOT EXISTS payment_logs (
 CREATE TABLE IF NOT EXISTS plan_settings (
     code       VARCHAR(40) PRIMARY KEY,
     data       JSON NOT NULL,
+    updated_by VARCHAR(190) NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS app_settings (
+    name       VARCHAR(60) PRIMARY KEY,
+    value      JSON NOT NULL,
     updated_by VARCHAR(190) NULL,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;

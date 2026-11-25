@@ -39,13 +39,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($action === 'pago') {
         $fecha = (string) ($_POST['paid_at'] ?? '');
         $neto = (float) preg_replace('/[^0-9]/', '', (string) ($_POST['amount_received'] ?? ''));
+        $eurRate = parse_decimal((string) ($_POST['eur_rate'] ?? ''));
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) {
             flash('error', 'Indique la fecha en que se recibió el pago.');
         } elseif ($neto <= 0 || $neto > (float) $order['amount']) {
             flash('error', 'El neto recibido debe ser mayor que cero y no superior al valor cobrado.');
+        } elseif ($eurRate <= 0) {
+            flash('error', 'Indique el tipo de cambio (' . CURRENCY . ' por 1 EUR) de la fecha del pago; se usa en la factura.');
         } else {
-            $pdo->prepare('UPDATE orders SET paid_at = ?, amount_received = ? WHERE id = ?')
-                ->execute([$fecha . ' 12:00:00', $neto, $order['id']]);
+            $pdo->prepare('UPDATE orders SET paid_at = ?, amount_received = ?, eur_rate = ? WHERE id = ?')
+                ->execute([$fecha . ' 12:00:00', $neto, $eurRate, $order['id']]);
             set_order_status(find_order_by_reference($order['external_reference']), 'approved', 'Pago confirmado por ' . $admin['email']);
             flash('success', 'Pago registrado y licencia activada. El cliente ya puede ver su comprobante.');
         }
@@ -142,7 +145,7 @@ include __DIR__ . '/../includes/site_header.php';
             <td>
               <div class="toolbar" style="gap:6px;flex-wrap:nowrap">
                 <?php if ($o['license_id']): ?><a class="icon-btn" href="<?= url('portal/licencia.php?id=' . $o['license_id']) ?>">Licencia</a><?php endif; ?>
-                <?php if ($o['status'] === 'approved'): ?><a class="icon-btn" href="<?= url('portal/comprobante.php?ref=' . urlencode($o['external_reference'])) ?>">Comprobante</a><?php endif; ?>
+                <?php if ($o['status'] === 'approved'): ?><a class="icon-btn" href="<?= url('portal/comprobante.php?ref=' . urlencode($o['external_reference'])) ?>">Comprobante</a><a class="icon-btn" href="<?= url('portal/factura.php?ref=' . urlencode($o['external_reference'])) ?>">Factura</a><?php endif; ?>
                 <?php if ($o['status'] !== 'approved'): ?><button class="icon-btn" type="button" data-toggle="pay<?= (int) $o['id'] ?>">Registrar pago</button><?php endif; ?>
                 <?php foreach ([['approve', 'Aprobar', '¿Aprobar este pedido manualmente y activar la licencia?'], ['cancel', 'Cancelar', '¿Cancelar este pedido? La licencia quedará suspendida.'], ['delete', 'Eliminar', '¿Eliminar definitivamente este pedido?']] as [$act, $label, $confirm]):
                     if ($act === 'approve' && $o['status'] === 'approved') continue;
@@ -160,6 +163,7 @@ include __DIR__ . '/../includes/site_header.php';
                   <?= csrf_field() ?><input type="hidden" name="action" value="pago"><input type="hidden" name="order_id" value="<?= (int) $o['id'] ?>">
                   <input class="input" type="date" name="paid_at" value="<?= date('Y-m-d') ?>" required style="padding:8px 10px;font-size:.85rem" title="Fecha en que se recibió el pago">
                   <input class="input" name="amount_received" inputmode="numeric" required placeholder="Neto recibido" value="<?= e(number_format((float) $o['amount'], 0, ',', '.')) ?>" style="padding:8px 10px;font-size:.85rem;max-width:130px" title="Valor acreditado en la cuenta, después de comisiones">
+                  <input class="input" name="eur_rate" inputmode="decimal" required placeholder="<?= e(CURRENCY) ?> por 1 EUR" value="<?= e(number_format((float) EUR_RATE_DEFAULT, 2, ',', '.')) ?>" style="padding:8px 10px;font-size:.85rem;max-width:120px" title="Tipo de cambio BCE de la fecha del pago (<?= e(CURRENCY) ?> por 1 EUR). Se usa para expresar en euros la cuota de IVA de la factura">
                   <button class="icon-btn" type="submit">Aprobar con pago</button>
                 </form>
               <?php endif; ?>

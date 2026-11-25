@@ -282,7 +282,7 @@ function build_invoice(array $order): array
         'number'         => $useSeries ? $s['series'] . '-' . (int) $s['next_number'] : receipt_number($order),
         'series'         => $useSeries ? $s['series'] : 'CP',
         'receipt'        => receipt_number($order),
-        'issued_on'      => date('Y-m-d', strtotime($paidAt)),
+        'issued_on'      => date('Y-m-d'),   // fecha real de expedición; la del pago es la de la operación
         'operation_on'   => date('Y-m-d', strtotime($paidAt)),
         'reference'      => $order['external_reference'],
         'payment_method' => $order['payment_method'] === 'manual' ? 'Transferencia / acuerdo directo' : 'Enlace de pago en línea',
